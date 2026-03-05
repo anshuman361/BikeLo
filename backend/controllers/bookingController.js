@@ -92,9 +92,12 @@ export const getAllBookings = async (req, res) => {
 export const getRevenue = async (req, res) => {
   try {
     const bookings = await Booking.find();
-    const totalRevenue = booking.reduce(
-      (acc, (booking) => acc + booking.totalPrice, 0),
+
+    const totalRevenue = bookings.reduce(
+      (acc, booking) => acc + booking.totalPrice,
+      0,
     );
+
     res.json({
       totalBookings: bookings.length,
       totalRevenue,

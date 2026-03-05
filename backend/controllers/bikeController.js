@@ -126,3 +126,16 @@ export const createBike = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+export const getRevenue = async (req, res) => {
+  const bookings = await Booking.find({ paymentStatus: "paid" });
+
+  const totalRevenue = bookings.reduce(
+    (sum, booking) => sum + booking.totalPrice,
+    0,
+  );
+
+  res.json({
+    totalRevenue,
+    totalBookings: bookings.length,
+  });
+};

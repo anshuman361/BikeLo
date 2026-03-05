@@ -17,8 +17,6 @@ const PrivateNavbar = () => {
 
   const handleLogout = () => {
     dispatch(logout());
-    toast.success("Logged out successfully");
-    alert("Logged out successfully");
     navigate("/");
   };
 

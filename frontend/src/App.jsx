@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Login from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 import BikeDetails from "./pages/BikeDetails";
@@ -8,9 +8,10 @@ import Navbar from "./components/Navbar";
 import Profile from "./pages/Profile";
 import Payment from "./pages/Payment";
 import MyBooking from "./pages/MyBooking";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function App() {
-  // const [selectedCity, setSelectedCity] = useState("");
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   return (
     <BrowserRouter>
       <Navbar />
@@ -27,6 +28,16 @@ function App() {
             <ProtectedRoute>
               <Profile />
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            userInfo?.role === "admin" ? (
+              <AdminDashboard />
+            ) : (
+              <Navigate to="/" />
+            )
           }
         />
       </Routes>

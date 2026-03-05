@@ -5,7 +5,6 @@ import * as Yup from "yup";
 import { loginSuccess } from "../features/auth/authSlice";
 import { useNavigate, Link } from "react-router-dom";
 import API from "../services/api";
-import toast from "react-hot-toast";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -20,15 +19,24 @@ const Login = () => {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const { data } = await API.post("/auth/login", values);
+
       dispatch(loginSuccess(data));
-      navigate("/");
+
+      localStorage.setItem("userInfo", JSON.stringify(data));
+
       alert("Login Successful 🎉");
-      toast.success("Login Successful 🚀");
-      localStorage.setItem("userInfo", JSON.stringify(res.data));
+
+      // redirect based on role
+      if (data.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
     } catch (error) {
-      // alert("Invalid credentials");
+      alert("Invalid credentials");
       console.log("LOGIN ERROR:", error.response?.data);
     }
+
     setSubmitting(false);
   };
 
