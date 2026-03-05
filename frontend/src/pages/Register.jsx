@@ -5,8 +5,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../features/auth/authSlice";
 import API from "../services/api";
+import { useState } from "react";
 
 const Register = () => {
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -34,32 +38,56 @@ const Register = () => {
       .oneOf([Yup.ref("password"), null], "Passwords must match")
       .required("Confirm your password"),
   });
+  const sendOTP = async (email) => {
+    try {
+      await API.post("/auth/send-otp", { email });
 
+      alert("OTP sent to email");
+
+      setOtpSent(true);
+    } catch (error) {
+      alert(error.response?.data?.message);
+    }
+  };
+  const verifyOTP = async (email, otp) => {
+    try {
+      await API.post("/auth/verify-otp", { email, otp });
+
+      alert("Email verified");
+
+      setOtpVerified(true);
+    } catch (error) {
+      alert(error.response?.data?.message);
+    }
+  };
   // Submit Function
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       const { name, email, password } = values;
 
-      const { data } = await API.post("/auth/register", {
+      if (!otpVerified) {
+        alert("Please verify OTP first");
+        setSubmitting(false);
+        return;
+      }
+
+      await API.post("/auth/register", {
         name,
         email,
         password,
       });
 
-      // ❌ DO NOT store user here
-      // ❌ DO NOT dispatch loginSuccess here
-      // Register ≠ Login
-
       resetForm();
 
-      alert("Registration Successful 🎉! Please Login");
+      alert("Registration Successful 🎉");
 
-      navigate("/login"); // ✅ Redirect to login
+      navigate("/login");
     } catch (error) {
       console.log("Signup Error:", error);
+
       alert(error.response?.data?.message || "Registration failed");
     } finally {
-      setSubmitting(false); // ✅ Always stop loading
+      setSubmitting(false);
     }
   };
 
@@ -75,7 +103,7 @@ const Register = () => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {({ isSubmitting }) => (
+          {({ values }) => (
             <Form className="space-y-4">
               {/* Name */}
               <div>
@@ -93,19 +121,47 @@ const Register = () => {
               </div>
 
               {/* Email */}
-              <div>
+              <div className="flex gap-2">
                 <Field
                   type="email"
                   name="email"
                   placeholder="Email Address"
-                  className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="flex-1 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
-                <ErrorMessage
-                  name="email"
-                  component="div"
-                  className="text-red-500 text-sm mt-1"
-                />
+
+                <button
+                  type="button"
+                  onClick={() => sendOTP(values.email)}
+                  className="bg-blue-500 text-white px-4 rounded-lg"
+                >
+                  Send OTP
+                </button>
               </div>
+
+              <ErrorMessage
+                name="email"
+                component="div"
+                className="text-red-500 text-sm mt-1"
+              />
+
+              {otpSent && (
+                <div className="flex gap-2 mt-3">
+                  <Field
+                    type="text"
+                    name="otp"
+                    placeholder="Enter OTP"
+                    className="flex-1 p-3 border rounded-lg"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => verifyOTP(values.email, values.otp)}
+                    className="bg-green-500 text-white px-4 rounded-lg"
+                  >
+                    Verify
+                  </button>
+                </div>
+              )}
 
               {/* Password */}
               <div>
@@ -140,10 +196,10 @@ const Register = () => {
               {/* Submit Button */}
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={!otpVerified}
                 className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition duration-300 disabled:opacity-60"
               >
-                {isSubmitting ? "Creating Account..." : "Sign Up"}
+                Sign Up
               </button>
             </Form>
           )}

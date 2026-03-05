@@ -1,7 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
 dotenv.config();
-//dotenv.config({ path: "./.env" });
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
