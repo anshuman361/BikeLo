@@ -15,7 +15,7 @@ const BikeDetails = () => {
       const userInfo = JSON.parse(localStorage.getItem("user"));
       const token = userInfo?.token;
       const { data } = await axios.post(
-        "http://localhost:3000/api/bookings",
+        "https://bike-l0.vercel.app/api/bookings",
         {
           bikeId: id,
           startTime: new Date(startTime).toISOString(),
@@ -44,7 +44,7 @@ const BikeDetails = () => {
   };
   useEffect(() => {
     const fetchBike = async () => {
-      const res = await axios.get(`http://localhost:3000/api/bikes/${id}`);
+      const res = await axios.get(`https://bike-l0.vercel.app/api/bikes/${id}`);
       setBike(res.data);
     };
     fetchBike();
