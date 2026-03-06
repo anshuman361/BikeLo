@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://bikelo-backend.onrender.com/api/bikes",
+  baseURL: "https://bikelo-backend.onrender.com/api",
   withCredentials: true,
 });
 
