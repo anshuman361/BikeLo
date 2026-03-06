@@ -13,7 +13,7 @@ const Home = () => {
   useEffect(() => {
     const fetchBikes = async () => {
       try {
-        let url = "http://localhost:3000/api/bikes";
+        let url = "https://bikelo-backend.onrender.com/api/bikes";
 
         if (city) {
           url += `?city=${city}`;

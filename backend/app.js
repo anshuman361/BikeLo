@@ -25,7 +25,7 @@ mongoose
 app.use(express.json());
 app.use(
   cors({
-    origin: "https://bike-l0.vercel.app",
+    origin: "https://bikelo-backend.onrender.com",
     credentials: true,
   }),
 );
