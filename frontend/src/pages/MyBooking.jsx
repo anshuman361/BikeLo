@@ -14,7 +14,7 @@ const MyBooking = () => {
       const userInfo = JSON.parse(localStorage.getItem("user"));
       const token = userInfo?.token;
       const { data } = await axios.get(
-        "http://localhost:3000/api/bookings/my",
+        "https://bikelo-backend.onrender.com/api/bookings/my",
         {
           headers: {
             Authorization: `Bearer ${token}`,
