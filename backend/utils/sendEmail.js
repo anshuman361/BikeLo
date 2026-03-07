@@ -1,24 +1,14 @@
-import nodemailer from "nodemailer";
-const sendEmail = async (email, otp) => {
-  const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    family: 4,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
+import { Resend } from "resend";
 
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+const sendEmail = async (email, otp) => {
+  await resend.emails.send({
+    from: "BikeLo <onboarding@resend.dev>",
     to: email,
     subject: "BikeLo Email Verification",
     text: `Your OTP is ${otp}. It expires in 10 minutes.`,
-  };
-
-  await transporter.sendMail(mailOptions);
+  });
 };
 
 export default sendEmail;
