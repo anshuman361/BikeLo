@@ -3,9 +3,10 @@ import nodemailer from "nodemailer";
 const sendEmail = async (email, otp) => {
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    family: 4, // force IPv4 (important for Render)
+    port: 587,
+    secure: false, // TLS starts automatically
+    requireTLS: true,
+    family: 4, // force IPv4 (fix for Render)
     connectionTimeout: 10000,
     greetingTimeout: 10000,
     socketTimeout: 10000,
