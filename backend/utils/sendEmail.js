@@ -1,29 +1,24 @@
-import nodemailer from "nodemailer";
+import SibApiV3Sdk from "sib-api-v3-sdk";
 
 const sendEmail = async (email, otp) => {
-  const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false, // TLS starts automatically
-    requireTLS: true,
-    family: 4, // force IPv4 (fix for Render)
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 10000,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
+  const client = SibApiV3Sdk.ApiClient.instance;
 
-  const mailOptions = {
-    from: `"BikeLo" <${process.env.EMAIL_USER}>`,
-    to: email,
+  const apiKey = client.authentications["api-key"];
+  apiKey.apiKey = process.env.BREVO_API_KEY;
+
+  const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+
+  const sendSmtpEmail = {
+    to: [{ email: email }],
+    sender: {
+      email: "yourbrevoemail@gmail.com",
+      name: "BikeLo",
+    },
     subject: "BikeLo Email Verification",
-    text: `Your OTP is ${otp}. It expires in 10 minutes.`,
+    textContent: `Your OTP is ${otp}. It expires in 10 minutes.`,
   };
 
-  await transporter.sendMail(mailOptions);
+  await apiInstance.sendTransacEmail(sendSmtpEmail);
 };
 
 export default sendEmail;
