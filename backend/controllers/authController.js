@@ -117,9 +117,8 @@ export const sendOTP = async (req, res) => {
       message: "OTP sent successfully",
     });
   } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
+    console.log("OTP ERROR:", error);
+    res.status(500).json({ message: error.message });
   }
 };
 
