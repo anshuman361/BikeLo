@@ -27,7 +27,7 @@ const Login = () => {
       alert("Login Successful 🎉");
 
       // redirect based on role
-      if (data.role === "admin") {
+      if (data.user?.role === "admin") {
         navigate("/admin");
       } else {
         navigate("/");
